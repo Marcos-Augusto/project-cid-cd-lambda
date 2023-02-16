@@ -1,0 +1,20 @@
+versio: 0.2
+phases:
+  install:
+    runtime-versions:
+    python: 3.8
+  commands:
+    - echo "Instalando dependencias..."
+    - pip install -r requirements.txt -t lib 
+  build: 
+    commands:
+     - echo "Ziping pacotes do deploy"
+     - cd lib
+     - zip -r9 ../deployment_package.zip .
+     - cd ..
+     - zip -g deployment_package.zip lambda_function.py
+  post_build:
+   commands: 
+      - echo "Updating Lambda Function"
+      - aws lambda update-function-code --function-name marcos-projetct-v1 --zip-file fileb://deployment_package.zip
+      - echo "FEITO!!!"
